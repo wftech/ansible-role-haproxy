@@ -1,0 +1,43 @@
+---
+# These variables can be used
+
+# haproxy_scl_package: centos-release-scl-rh
+# haproxy_packages:
+#  - rh-haproxy18-haproxy
+#  - rh-haproxy18-haproxy-syspaths
+
+# haproxy_binary: /opt/rh/rh-haproxy18/root/usr/sbin/haproxy
+# haproxy_config_path: /etc/opt/rh/rh-haproxy18/haproxy/haproxy.cfg
+# haproxy_service_name
+
+# haproxy_config_global: |
+#    Global config is here!
+
+# haproxy_config_defaults: |
+#    config defaults should be here
+
+haproxy_frontends:
+  - name: main
+    bind: "*:5000"
+    config: |
+      mode http
+      default_backend             forbidden
+
+  - name: stats
+    bind: 127.0.0.1:10001
+    config: |
+      mode http
+      use_backend stats
+
+haproxy_backends:
+  - name: stats
+    config: |
+      stats enable
+      stats uri /stats/
+      stats admin if TRUE
+
+  - name: forbidden
+    config: |
+      #    errorfile 503 /usr/share/haproxy/403.http
+      acl true always_true
+      http-request deny if true

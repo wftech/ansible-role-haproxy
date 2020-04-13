@@ -1,0 +1,46 @@
+---
+
+__haproxy_scl_package: centos-release-scl-rh
+__haproxy_packages:
+  - rh-haproxy18-haproxy
+  - rh-haproxy18-haproxy-syspaths
+
+__haproxy_binary:
+  /opt/rh/rh-haproxy18/root/usr/sbin/haproxy
+__haproxy_config_path:
+  /etc/opt/rh/rh-haproxy18/haproxy/haproxy.cfg
+
+__haproxy_service_name: rh-haproxy18-haproxy
+
+__haproxy_config_global: |
+  log         127.0.0.1 local2
+  chroot      /var/opt/rh/rh-haproxy18/lib/haproxy
+  pidfile     /var/run/rh-haproxy18-haproxy.pid
+  maxconn     4000
+  user        haproxy
+  group       haproxy
+  daemon
+
+  stats socket /var/opt/rh/rh-haproxy18/lib/haproxy/stats
+
+  # utilize system-wide crypto-policies
+  ssl-default-bind-ciphers PROFILE=SYSTEM
+  ssl-default-server-ciphers PROFILE=SYSTEM
+
+__haproxy_config_defaults: |
+  mode                    http
+  log                     global
+  option httplog
+  option dontlognull
+  option http-server-close
+  option forwardfor       except 127.0.0.0/8
+  option  redispatch
+  retries 3
+  timeout http-request    10s
+  timeout queue           1m
+  timeout connect         10s
+  timeout client          1m
+  timeout server          1m
+  timeout http-keep-alive 10s
+  timeout check           10s
+  maxconn                 3000

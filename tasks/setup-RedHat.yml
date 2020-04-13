@@ -1,0 +1,18 @@
+---
+- name: Add SCL
+  yum:
+    name: centos-release-scl
+    state: present
+  when: haproxy_scl_package|default(False)
+
+- name: Install haproxy SCL
+  yum:
+    name: '{{ haproxy_scl_package }}'
+    state: present
+
+  when: haproxy_scl_package|default(False)
+
+- name: Install haproxy packages
+  yum:
+    name: '{{ haproxy_packages }}'
+    state: present

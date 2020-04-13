@@ -1,0 +1,43 @@
+---
+# yamllint disable rule:line-length
+
+- name: "Include distribution specific variables defaults"
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml'
+        - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+      path:
+        - '../vars'
+
+- name: Copy default variables when required
+  set_fact:
+    haproxy_scl_package: '{{ haproxy_scl_package|default(__haproxy_scl_package) }}'
+    haproxy_packages: '{{ haproxy_packages|default(__haproxy_packages) }}'
+    haproxy_binary: '{{ haproxy_binary|default(__haproxy_binary) }}'
+    haproxy_config_path: '{{ haproxy_config_path|default(__haproxy_config_path) }}'
+    haproxy_service_name: '{{ haproxy_service_name|default(__haproxy_service_name) }}'
+    haproxy_config_global: '{{ haproxy_config_global|default(__haproxy_config_global) }}'
+    haproxy_config_defaults: '{{ haproxy_config_defaults|default(__haproxy_config_defaults) }}'
+
+# yamllint enable rule:line-length
+- include: setup-RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- include: setup-Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Provide haproxy config
+  template:
+    src: 'haproxy.cfg.j2'
+    dest: '{{ haproxy_config_path }}'
+    validate: '{{ haproxy_binary }} -c -V -f  %s'
+  notify: reload haproxy
+
+- name: Make sure haproxy is up
+  service:
+    name: '{{ haproxy_service_name }}'
+    state: started
+    enabled: true

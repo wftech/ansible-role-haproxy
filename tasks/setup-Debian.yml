@@ -1,0 +1,5 @@
+---
+- name: Install haproxy (Debian)
+  apt:
+    name: '{{ haproxy_packages }}'
+    state: present

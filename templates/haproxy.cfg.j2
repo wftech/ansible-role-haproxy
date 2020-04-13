@@ -1,0 +1,27 @@
+# {{  ansible_managed  }}
+#
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+
+global
+{{ haproxy_config_global|indent(8) }}
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+
+defaults
+{{ haproxy_config_defaults|indent(8) }}
+
+
+{% for frontend in haproxy_frontends %}
+frontend {{ frontend.name }}
+        bind {{  frontend.bind }}
+        {{ frontend.config|indent(8) }}
+{% endfor %}
+
+{% for backend in haproxy_backends %}
+backend {{ backend.name }}
+        {{ backend.config|indent(8) }}
+{% endfor %}
