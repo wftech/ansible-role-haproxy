@@ -3,3 +3,4 @@
   apt:
     name: '{{ haproxy_packages }}'
     state: present
+    cache_valid_time: 3600

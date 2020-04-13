@@ -1,6 +1,9 @@
 ---
 # yamllint disable rule:line-length
 
+#- debug:
+#    msg: '{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml'
+
 - name: "Include distribution specific variables defaults"
   include_vars: '{{ item }}'
   with_first_found:
@@ -34,6 +37,7 @@
     src: 'haproxy.cfg.j2'
     dest: '{{ haproxy_config_path }}'
     validate: '{{ haproxy_binary }} -c -V -f  %s'
+    backup: '{{ haproxy_backup_config }}'
   notify: reload haproxy
 
 - name: Make sure haproxy is up

@@ -16,6 +16,8 @@
 # haproxy_config_defaults: |
 #    config defaults should be here
 
+haproxy_backup_config: true
+
 haproxy_frontends:
   - name: main
     bind: "*:5000"

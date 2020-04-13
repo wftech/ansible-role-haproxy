@@ -2,6 +2,7 @@
 __haproxy_scl_package: ~
 __haproxy_packages:
   - haproxy
+  - procps      # procps is required to reload the haproxy on Debian 10
 
 __haproxy_binary:
   /usr/sbin/haproxy
@@ -9,7 +10,6 @@ __haproxy_config_path:
   /etc/haproxy/haproxy.cfg
 
 __haproxy_service_name: haproxy
-
 
 # yamllint disable rule:line-length
 __haproxy_config_global: |
@@ -31,7 +31,7 @@ __haproxy_config_global: |
         #  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
         ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
         ssl-default-bind-options no-sslv3
-
+# yamllint enable rule:line-length
 
 __haproxy_config_defaults: |
         log     global
